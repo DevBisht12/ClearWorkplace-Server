@@ -28,7 +28,7 @@ ConnectDB(DATABASE_URL)
     });
 
     app.get('/',(req,res)=>{
-        res.send('clear-workplace-server working fine');
+        res.send('Clear-Workplace-Server Working Fine..');
     })
 // User or employee routes
 app.use('/user', userRoutes);
