@@ -1,6 +1,6 @@
 import express from 'express'
 import CompanyController from '../Controller/employer.Controller.js'
-import authorizeRoles from '../Middleware/AuthRoleMiddleware.js'
+import authorizeRoles from '../Middleware/AuthRole.Middleware.js'
 const app= express()
 
 app.post('/register',CompanyController.RegisterCompany)
