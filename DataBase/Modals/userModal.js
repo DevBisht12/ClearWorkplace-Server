@@ -147,6 +147,9 @@ const userSchema = new mongoose.Schema({
     default: [],
   },
   averageRating: { type: Number, default: 0 },
+  resume:{
+    type: String,
+  },
   myAllJobs: [
     {
       type: mongoose.Schema.Types.ObjectId,

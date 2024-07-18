@@ -385,6 +385,29 @@ class UserController {
     }
   }
   
+  static async uploadResume(req,res){
+    try {
+      if(!req.file){
+        return res.status(400).json({
+          success: false,
+          message: "Please upload a resume file."
+        })
+      }
+      const resume = {
+        url: req.file, 
+      };
+      return res.status(200).json({
+        success: true,
+        data:resume
+      })
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        message: "Server error."
+      })
+    }
+  }
 }
 
 export default UserController;

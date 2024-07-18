@@ -1,5 +1,5 @@
 import express from 'express'
-import CompanyController from '../Controller/employerController.js'
+import CompanyController from '../Controller/employer.Controller.js'
 import authorizeRoles from '../Middleware/AuthRoleMiddleware.js'
 const app= express()
 
