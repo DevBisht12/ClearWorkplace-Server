@@ -6,7 +6,10 @@ const ConnectDB= async(DATABASE_URL)=>{
         const DB_OPATIONS={
             dbName:'clearWorkplaceDB'
         }
-        await mongoose.connect(DATABASE_URL,DB_OPATIONS)
+        await mongoose.connect(DATABASE_URL,DB_OPATIONS,{
+            useNewUrlParser:true,
+            useUnifiedTopology:true
+        })
         return Promise.resolve();
     } catch (error) {
         return Promise.reject(error);
