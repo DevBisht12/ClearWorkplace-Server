@@ -393,6 +393,7 @@ class UserController {
           message: "Please upload a resume file."
         })
       }
+      console.log("file",req.file)
       const resume = {
         url: req.file, 
       };
