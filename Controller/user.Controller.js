@@ -3,17 +3,14 @@ import { User } from "../DataBase/Modals/userModal.js";
 import { Company } from "../DataBase/Modals/employerModal.js";
 import jwt from "jsonwebtoken";
 import Job from "../DataBase/Modals/JobModal.js";
+import cloudinary from "../utils/cloudinary.utils.js";
 import dotenv from 'dotenv'
-// import sgMail from '@sendgrid/mail'
+
 
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
-
-// const client = new postmark.ServerClient(
-//   "f7510941-bd8c-4ef9-9e38-68b83eff13a8"
-// );
 
 class UserController {
   static async registerUser(req, res) {
@@ -385,30 +382,33 @@ class UserController {
     }
   }
   
-  static async uploadResume(req,res){
+  static async uploadResume(req, res) {
     try {
-      if(!req.file){
-        return res.status(400).json({
-          success: false,
-          message: "Please upload a resume file."
-        })
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { resource_type: 'auto' },
+          (error, result) => {
+              if (error) {
+                  return res.status(500).send(error);
+              }
+              res.status(200).json({
+                  message: 'Image uploaded successfully',
+                  data: result
+              });
+          }
+      );
+
+      if (req.file) {
+          uploadStream.end(req.file.buffer);
+      } else {
+          res.status(400).send('No file uploaded');
       }
-      console.log("file",req.file)
-      const resume = {
-        url: req.file, 
-      };
-      return res.status(200).json({
-        success: true,
-        data:resume
-      })
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        success: false,
-        message: "Server error."
-      })
-    }
+  } catch (error) {
+      res.status(500).send(error);
   }
+  }
+  
+  
 }
 
 export default UserController;
+

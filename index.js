@@ -24,11 +24,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-// {
-//     origin: 'http://localhost:5173',
-//     credentials: true,
-// }
-
 // Connect to database
 ConnectDB(DATABASE_URL)
     .then(() => {
