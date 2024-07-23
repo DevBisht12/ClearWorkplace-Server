@@ -384,28 +384,48 @@ class UserController {
   
   static async uploadResume(req, res) {
     try {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        { resource_type: 'auto' },
-          (error, result) => {
-              if (error) {
-                  return res.status(500).send(error);
-              }
-              res.status(200).json({
-                  message: 'Image uploaded successfully',
-                  data: result
-              });
-          }
-      );
-
-      if (req.file) {
-          uploadStream.end(req.file.buffer);
-      } else {
-          res.status(400).send('No file uploaded');
+      const { _id } = req.user;
+  
+      if (!req.file) {
+        return res.status(400).send('No file uploaded');
       }
-  } catch (error) {
-      res.status(500).send(error);
+  
+      const uploadToCloudinary = () => {
+        return new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { resource_type: 'auto' },
+            (error, result) => {
+              if (error) {
+                return reject(error);
+              }
+              resolve(result);
+            }
+          );
+  
+          uploadStream.end(req.file.buffer);
+        });
+      };
+  
+      // Upload file to Cloudinary
+      const result = await uploadToCloudinary();
+  
+      const updateResume = await User.findByIdAndUpdate(
+        _id,
+        { resume: result.secure_url },
+        { new: true }
+      );
+  
+      res.status(200).json({
+        message: 'Image uploaded successfully',
+        data: result,
+        userData:updateResume
+      });
+  
+    } catch (error) {
+      res.status(500).send(error.message || 'Internal server error');
+    }
   }
-  }
+  
   
   
 }

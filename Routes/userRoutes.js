@@ -13,4 +13,5 @@ app.post('/add-experience',UserController.addExperience)
 app.post('/review-company',UserController.addCompanyRating)
 app.post('/upload-resume', upload.single('file'), UserController.uploadResume);
 
+
 export default app

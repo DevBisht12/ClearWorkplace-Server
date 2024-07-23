@@ -134,6 +134,9 @@ const userSchema = new mongoose.Schema({
   skills: {
     type: [String],
   },
+  position:{
+    type: String,
+  },
   experience: {
     type: [experienceSchema],
     default: [],

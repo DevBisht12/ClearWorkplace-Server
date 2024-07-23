@@ -304,10 +304,14 @@ class CompanyController {
       }
 
       const{employees}=company
+      const all_Employee_details=await Promise.all(employees.map(async(employe_id)=>{
+        const employee=await User.findById(employe_id)
+        return employee
+      }))
       return res.status(200).json({
         success:true,
         message:"Employees retrieved successfully",
-        data:employees
+        data:all_Employee_details
       })
 
     } catch (error) {
@@ -393,6 +397,67 @@ class CompanyController {
     }
   }
   
+  static async getalljobDetails(req, res) {
+    try {
+      const token = req.headers.authorization;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const employee_id = decoded.id;
+      console.log(employee_id)
+      const company = await Company.findById(employee_id).populate('jobs');
+
+      if (!company) {
+        return res.status(404).json({
+          success: false,
+          message: 'Company not found',
+        });
+      }
+
+      const jobDetails = await Promise.all(company.jobs.map(async (jobId) => {
+        const job = await Job.findById(jobId);
+        return job;
+      }));
+
+      return res.status(200).json({
+        success: true,
+        message: 'Jobs retrieved successfully',
+        data: jobDetails,
+      });
+    } catch (error) {
+      console.error('Error retrieving job details:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'An error occurred while retrieving job details',
+        error: error.message,
+      });
+    }
+  }
+
+  static async getEmployeeDetails(req,res){
+    try {
+      const company=req.company
+      console.log(company)
+      const {id}=req.query
+      console.log(id)
+      const employee= await User.findById(id)
+      if(!employee){
+        return res.status(404).json({
+          success:false,
+          message:'Employee not found'
+        })
+      }
+      // console.log(employee)
+      return res.status(200).json({
+        success:true,
+        message:'Employee details retrieved successfully',
+        data:employee
+      })
+    } catch (error) {
+      res.status(500).json({
+        success:false,
+        message:'An error occurred while retrieving employee details',
+      })
+    }
+  }
 }
 
 export default CompanyController;
